@@ -53,6 +53,7 @@ def build_model(data_manager, initial_embeddings, vocab_size,
     )
 
 
+# TODO upgrade - just an RNN
 class Tracker(nn.Module):
     '''The tracker keeps a summary of the parsing process so far. This is the
     "tracking LSTM" as described in the paper.'''
@@ -70,6 +71,7 @@ class Tracker(nn.Module):
         super(Tracker, self).__init__()
 
         # Initialize layers.
+        # TODO what is lateral_tracking?
         if lateral_tracking:
             self.buf = Linear()(size, 4 * tracker_size, bias=True)
             self.stack1 = Linear()(size, 4 * tracker_size, bias=False)

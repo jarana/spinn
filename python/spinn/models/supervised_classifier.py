@@ -152,7 +152,6 @@ def evaluate(FLAGS, model, eval_set, log_entry,
 
     A.add('total_tokens', total_tokens)
     A.add('total_time', total_time)
-
     eval_stats(model, A, eval_log)
     eval_log.filename = filename
 
@@ -242,7 +241,7 @@ def train_loop(
         # get the index of the max log-probability
         pred = output.data.max(1, keepdim=False)[1].cpu()
 
-        class_acc = pred.eq(target).sum() / float(target.size(0))
+        class_acc = float(pred.eq(target).sum().item()) / float(target.size(0))
 
         # Calculate class loss.
         xent_loss = nn.CrossEntropyLoss()(output, to_gpu(Variable(target, volatile=False)))
@@ -272,12 +271,12 @@ def train_loop(
         total_time = end - start
 
         train_accumulate(model, A, batch)
-        A.add('class_acc', class_acc)
-        A.add('total_tokens', total_tokens)
-        A.add('total_time', total_time)
+        A.add('class_acc', class_acc)# Tensor
+        A.add('total_tokens', total_tokens)# Float
+        A.add('total_time', total_time)# Float
 
         if trainer.step % FLAGS.statistics_interval_steps == 0:
-            A.add('xent_cost', xent_loss.data[0])
+            A.add('xent_cost', float(xent_loss.item()))
             stats(model, trainer, A, log_entry)
             should_log = True
             progress_bar.finish()

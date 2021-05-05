@@ -743,10 +743,12 @@ class MLP(nn.Module):
         return y
 
 
+# TODO figure out what this is for
 def ZeroInitializer(param):
     shape = param.size()
     init = np.zeros(shape).astype(np.float32)
-    param.data.set_(torch.from_numpy(init))
+    with torch.no_grad():
+      param.set_(torch.from_numpy(init))
 
 
 def Linear(initializer=kaiming_normal_,
